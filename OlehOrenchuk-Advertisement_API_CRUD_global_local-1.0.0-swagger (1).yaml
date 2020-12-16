@@ -1,0 +1,457 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Laba5_PP
+  description: Created by OlehOrenchuk_ Advertisement_API_CRUD_GLOBAL_LOCAL
+servers:
+  - url: https://adcrud.com/v1
+tags:
+  - name: Public
+    description: Ads for public
+  - name: Local
+    description: Ads for login users + checking for the same city
+  - name: User
+    description: Authorizing
+paths: 
+  /ad:
+    get:
+      tags:
+        - Public
+      summary: Get ad array
+      description: Get ad array
+      parameters:
+        - name: Amount
+          in: query
+          schema:
+           $ref: '#/components/schemas/AmountOfAd'
+      responses:
+        200:
+          description: Successful pull of ad array
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/AdPublicArray'
+        400:
+          description: Invalid status value
+    post:
+      tags:
+        - Public
+      summary: Create an ad
+      description: Create an ad
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              #type: object
+              $ref: '#/components/schemas/AdPublic'
+          
+      responses:
+        200:
+          description: Successfully created a new advertisement
+  /ad/{id}:
+    get:
+      tags:
+        - Public
+      summary: Get ad by id
+      description: Get ad by id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The ID of the advertisement
+          schema:
+            type: integer
+            example: 5
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                #type: object
+                $ref: '#/components/schemas/AdPublic'
+  
+    put:
+      tags:
+        - Public
+      summary: Update ad
+      parameters:
+        - name: id
+          in: path
+          description: ID of advertisement that needs to be updated
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                      id: 
+                        type: integer
+                        example: 1689
+                        
+                      title:
+                        type: string
+                        example: Selling Volkswagen Passat B7. Price 1$
+                      
+                      author:
+                        type: string
+                        example: Bad Boy
+        404:
+          description: Ad not found
+  
+    delete:
+      tags: 
+        - Public
+      summary: Delete ad
+      parameters:
+      - name: id
+        in: path
+        description: ID of advertisement that needs to be deleted
+        required: true
+        schema:
+          type: integer
+          example: 5
+      responses:
+        200:
+          description: Ad deleted!
+        400:
+          description: Invalid ID
+        404:
+          description: ad not found
+  /local/ad:
+      get:
+        security:
+        - user_security:
+          - read
+          - write
+        tags:
+          - Local
+        summary: Get ad array
+        description: Get ad array
+        parameters:
+          - name: Amount
+            in: query
+            schema:
+             $ref: '#/components/schemas/AmountOfAd'
+        responses:
+          200:
+            description: Successful pull of ad array
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/AdLocalArray'
+          400:
+            description: Invalid status value
+      post:
+        security:
+        - user_security:
+          - read
+          - write
+        tags:
+          - Local
+        summary: Create an ad
+        description: Create an ad
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                #type: object
+                $ref: '#/components/schemas/AdLocal'
+            
+        responses:
+          200:
+            description: Successfully created a new advertisement
+  /local/ad{city}:
+      get:
+        security:
+        - user_security:
+          - read
+          - write
+        tags:
+          - Local
+        summary: Get ad array of the same city
+        description: Get ad array of the same city
+        parameters:
+          - in: path
+            name: city
+            required: true
+            description: city of advertisement
+            schema:
+              type: integer
+              example: 5
+          - name: Amount
+            in: query
+            schema:
+             $ref: '#/components/schemas/AmountOfAd'
+        responses:
+          200:
+            description: Successful pull of ad array
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/AdLocalArray'
+          400:
+            description: Invalid status value
+  
+  /local/ad{city}{id}:
+    get:
+      security:
+        - user_security:
+          - read
+          - write
+      tags:
+        - Local
+      summary: Get ad by id  
+      description: Get ad by id
+      parameters:
+        - in: path
+          name: city
+          required: true
+          description: city of advertisement
+          schema:
+            type: string
+            example: Lviv
+        - in: path
+          name: id
+          required: true
+          description: ID of advertisement
+          schema:
+            type: integer
+            example: 5
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                #type: object
+                $ref: '#/components/schemas/AdLocal'
+                      
+    put:
+      security:
+        - user_security:
+          - read
+          - write
+      tags:
+        - Local
+      summary: Update ad
+      parameters:
+        - in: path
+          name: city
+          required: true
+          description: city of advertisement
+          schema:
+            type: string
+            example: Lviv
+        - in: path
+          name: id
+          required: true
+          description: ID of advertisement
+          schema:
+            type: integer
+            example: 5
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                      id: 
+                        type: integer
+                        example: 1689
+                        
+                      title:
+                        type: string
+                        example: Selling Volkswagen Passat B7. Price 1$
+                      
+                      author:
+                        type: string
+                        example: Bad Boy
+                      city:
+                        type: string
+                        example: Lviv
+        404:
+          description: Ad not found
+  
+    delete:
+      security:
+        - user_security:
+          - read
+          - write
+      tags: 
+        - Local
+      summary: Delete ad
+      parameters:
+      - in: path
+        name: city
+        required: true
+        description: city of advertisement
+        schema:
+          type: string
+          example: Lviv
+      - in: path
+        name: id
+        required: true
+        description: ID of advertisement
+        schema:
+          type: integer
+          example: 5
+      responses:
+        200:
+          description: Ad deleted!
+        400:
+          description: Invalid ID
+        404:
+          description: ad not found
+  
+  /user:
+    post:
+      tags:
+        - User
+      summary: Create user
+      description: This can only be done by the logged in user.
+      operationId: createUser
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Bad Request 
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        description: Created user object
+        required: true
+
+  /user/login:
+    get:
+      tags:
+        - User
+      summary: Logs user into the system
+      operationId: loginUser
+      parameters:
+        - name: username
+          in: query
+          description: The user name for login
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: The password for login in clear text
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid username/password supplied
+
+  /user/logout:
+    get:
+      tags:
+        - User
+      summary: Logs out current logged in user session
+      operationId: logoutUser
+      responses:
+        default:
+          description: successful operation
+        '408':
+          description: Request Timeout
+      security:
+        - user_security:
+          - read
+          - write
+components:
+  securitySchemes:
+    user_security:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: 'http://example.com/oauth/token'
+          scopes:
+            write: allows modifying resources
+            read: allows reading resources
+  schemas:
+    AmountOfAd:
+      type: integer
+      format: int64
+      minimum: 1
+      maximum: 99999
+      example: 1689
+      
+    AdPublic:
+      properties:
+        id: 
+          type: integer
+          example: 5
+          
+        title:
+          type: string
+          example: Bicycle for sale. Price 200$
+        
+        author:
+          type: string
+          example: Alan Walker
+  
+    AdPublicArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/AdPublic'
+  
+    AdLocal:
+      properties:
+        id: 
+          type: integer
+          example: 1689
+          
+        title:
+          type: string
+          example: Bicycle for sale. Price 200$
+        
+        author:
+          type: string
+          example: Alan Walker
+        city:
+          type: string
+          example: Lviv
+    AdLocalArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/AdLocal'
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        phone:
+          type: string
