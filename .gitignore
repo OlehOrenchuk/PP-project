@@ -1,4 +1,7 @@
 .idea/
 __pycache__/
 venv/
-/alembic.ini/
+alembic.ini/
+check_models.py/
+crud.py/
+models.py/
