@@ -1,0 +1,13 @@
+from app import City,User
+from app import db
+city = City.query.filter_by(name='Lviv').first()
+city.users
+
+flask db init
+flask db migrate
+flask db upgrade
+
+from app import User,LocalAD
+from app import db
+user = User.query.filter_by(fullname='Oleg Orenchuk').first()
+user.localads
